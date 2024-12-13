@@ -8,23 +8,24 @@ import { CurrentConfig, TO_ADDRESS } from "../config"
 
 import { SEPOLIA_CHAIN_ID } from "../constants"
 
-const token0Address = CurrentConfig.token.token0Address
-const token1Address = CurrentConfig.token.token1Address
-
 const v2RouterAddress = CurrentConfig.env == 'Mainnet'
   ? '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
   : '0xeE567Fe1712Faf6149d80dA1E6934E354124CfE3'
 
 export async function swapTokenForExactToken({token0Address, token1Address, token0AmountForSwapMax, token1AmountForSwap}) {
+
   if (!token0Address || !token1Address) {
     throw new Error(`Missing required environment variables:
       TOKEN0_ADDRESS: ${token0Address ? 'Set' : 'Not Set'}
       TOKEN1_ADDRESS: ${token1Address ? 'Set' : 'Not Set'}
     `);
   }
+  
+  console.log('token0 address: ', token0Address)
+  console.log('token1 address: ', token1Address)
 
-  const token0Contract = new ethers.Contract(token0Address, ERC20_ABI, getProvider())
-  const token1Contract = new ethers.Contract(token1Address, ERC20_ABI, getProvider())
+  const token0Contract = new ethers.Contract(token0Address, ERC20_ABI, getWallet())
+  const token1Contract = new ethers.Contract(token1Address, ERC20_ABI, getWallet())
   
   const token0Decimals = await token0Contract.decimals()
   const token1Decimals = await token1Contract.decimals()
@@ -60,8 +61,6 @@ export async function swapTokenForExactToken({token0Address, token1Address, toke
     let amountOut = token1AmountForSwap
     let expectedAmountIn = reserves[0] - (reserves[0] * reserves[1]) / (reserves[1] + BigInt(amountOut))
     let amountInMax = token0AmountForSwapMax;
-
-    const token0Contract = new ethers.Contract(token0Address, ERC20_ABI, getWallet())
 
     console.log("Approving tokens for router")
     await token0Contract.approve(v2RouterAddress, amountInMax)
