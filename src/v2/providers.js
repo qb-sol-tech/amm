@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { CurrentConfig } from '../config'
+import { CurrentConfig } from './config'
 
 const mainnetProvider = new ethers.JsonRpcProvider(
   CurrentConfig.rpc.mainnet

@@ -58,7 +58,7 @@ function Dashboard() {
 
     } else {
       // Redirect to login if token is missing
-      navigate('/login');
+      // navigate('/login');
     }
   }, [navigate, token]);
 
