@@ -74,12 +74,17 @@ export async function swapTokenForExactToken({token0Address, token1Address, toke
     const to = TO_ADDRESS
     const deadline = Math.floor(Date.now() / 1000) + 60 * 10
 
+    const gasLimit = 3000000n
+
     const tx = await routerContract.swapTokensForExactTokens(
       amountOut,
       amountInMax,
       path,
       to,
       deadline,
+      {
+        gasLimit
+      },
     )
 
     console.log("Transaction sent. Hash:", tx.hash);
