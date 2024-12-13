@@ -2,7 +2,7 @@ import { ethers } from "ethers"
 import { Token } from "@uniswap/sdk-core"
 import { Pair } from "@uniswap/v2-sdk"
 
-import { ERC20_ABI, getWethTokenAddress, ROUTER_ABI } from "../abi"
+import { ERC20_ABI, ROUTER_ABI } from "../abi"
 import { getProvider, getWallet } from "../providers"
 import { CurrentConfig, TO_ADDRESS } from "../config"
 
@@ -61,11 +61,17 @@ export async function swapTokenForExactToken({token0Address, token1Address, toke
     let expectedAmountIn = reserves[0] - (reserves[0] * reserves[1]) / (reserves[1] + BigInt(amountOut))
     let amountInMax = token0AmountForSwapMax;
 
-    console.log(`Swapping ${expectedAmountIn} ${token1.symbol} for ${amountOut} ${token0.symbol}`)
+    const token0Contract = new ethers.Contract(token0Address, ERC20_ABI, getWallet())
+
+    console.log("Approving tokens for router")
+    await token0Contract.approve(v2RouterAddress, amountInMax)
+    console.log("Token approved")
+
+    console.log(`Swapping ${expectedAmountIn} ${token0.symbol} for ${amountOut} ${token1.symbol}`)
 
     const routerContract = new ethers.Contract(v2RouterAddress, ROUTER_ABI, getWallet())
 
-    const path = [token1.address, token0.address]
+    const path = [token0.address, token1.address]
     const to = TO_ADDRESS
     const deadline = Math.floor(Date.now() / 1000) + 60 * 10
 
@@ -87,7 +93,7 @@ export async function swapTokenForExactToken({token0Address, token1Address, toke
     console.log("Block Number:", receipt.blockNumber);
     console.log("Gas Used:", receipt.gasUsed.toString());
     console.log("Swapped successfully")
-    
+
     return true
 
   } catch (error) {
