@@ -2,16 +2,26 @@ import React, { useState } from "react";
 import axios from 'axios'
 import { useSelector } from "react-redux";
 import { addLiquidity } from "../v2/scripts/add_liquidity";
+import { swapTokenForExactToken } from "../v2/scripts/swap";
 
 const Uniswap = () => {
     const account = useSelector((state) => state.swap.account);
     const [userAccount, setUserAccount] = useState(account)
     const userAddress = userAccount.getAccount().address
 
-    const [tokenSymbolA, setTokenSymbolA] = useState('')
-    const [tokenSymbolB, setTokenSymbolB] = useState('')
-    const [tokenAmountA, setTokenAmountA] = useState('')
-    const [recipient, setRecipient] = useState('')
+    const [token0AddressForSwap, setToken0AddressForSwap] = useState('')
+    const [token1AddressForSwap, setToken1AddressForSwap] = useState('')
+    const [token0MaxAmount, setToken0MaxAmount] = useState()
+    const [token1AmountToBuy, setToken1AmountToBuy] = useState()
+
+    const handleSwap = async () => {
+        await swapTokenForExactToken(
+            token0AddressForSwap,
+            token1AddressForSwap,
+            token0MaxAmount,
+            token1AmountToBuy
+        )
+    }
 
     // add liquidity part
 
@@ -46,11 +56,42 @@ const Uniswap = () => {
             </div>
 
             <div className="flex flex-col gap-2 ">
-                <input className='text-white border-[1px] border-white rounded-md bg-black' type="text" value={tokenSymbolA} onChange={(e) => setTokenSymbolA(e.target.value)} name="" id="" />
-                <input className='text-white border-[1px] border-white rounded-md bg-black' type="text" value={tokenSymbolB} onChange={(e) => setTokenSymbolB(e.target.value)} name="" id="" />
-                <input className='text-white border-[1px] border-white rounded-md bg-black' type="text" value={tokenAmountA} onChange={(e) => setTokenAmountA(e.target.value)} name="" id="" />
-                <input className='text-white border-[1px] border-white rounded-md bg-black' type="text" value={recipient} onChange={(e) => setRecipient(e.target.value)} name="" id="" />
-                <button onClick={handleSwap} className=" text-white border-[1px] border-green-500">
+                <input
+                    className='text-white border-[1px] border-white rounded-md bg-black'
+                    type="text"
+                    value={token0AddressForSwap}
+                    onChange={(e) => setToken0AddressForSwap(e.target.value)}
+                    name=""
+                    id=""
+                />
+                <input
+                    className='text-white border-[1px] border-white rounded-md bg-black'
+                    type="text"
+                    value={token1AddressForSwap}
+                    onChange={(e) => setToken1AddressForSwap(e.target.value)}
+                    name=""
+                    id=""
+                />
+                <input
+                    className='text-white border-[1px] border-white rounded-md bg-black'
+                    type="number"
+                    value={token0MaxAmount}
+                    onChange={(e) => setToken0MaxAmount(e.target.value)}
+                    name=""
+                    id=""
+                />
+                <input
+                    className='text-white border-[1px] border-white rounded-md bg-black'
+                    type="text"
+                    value={token1AmountToBuy}
+                    onChange={(e) => setToken1AmountToBuy(e.target.value)}
+                    name=""
+                    id=""
+                />
+                <button
+                    onClick={handleSwap}
+                    className=" text-white border-[1px] border-green-500"
+                >
                     swap
                 </button>
 

@@ -15,7 +15,7 @@ const v2RouterAddress = CurrentConfig.env == 'Mainnet'
   ? '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
   : '0xeE567Fe1712Faf6149d80dA1E6934E354124CfE3'
 
-export async function swapTokenForExactToken() {
+export async function swapTokenForExactToken({token0Address, token1Address, token0AmountForSwapMax, token1AmountForSwap}) {
   if (!token0Address || !token1Address) {
     throw new Error(`Missing required environment variables:
       TOKEN0_ADDRESS: ${token0Address ? 'Set' : 'Not Set'}
@@ -57,9 +57,9 @@ export async function swapTokenForExactToken() {
       return false
     }
 
-    let amountOut = CurrentConfig.token.token1AmountForSwap
+    let amountOut = token1AmountForSwap
     let expectedAmountIn = reserves[0] - (reserves[0] * reserves[1]) / (reserves[1] + BigInt(amountOut))
-    let amountInMax = CurrentConfig.token.token0AmountForSwapMax;
+    let amountInMax = token0AmountForSwapMax;
 
     console.log(`Swapping ${expectedAmountIn} ${token1.symbol} for ${amountOut} ${token0.symbol}`)
 
@@ -77,8 +77,17 @@ export async function swapTokenForExactToken() {
       deadline,
     )
 
-    await tx.wait()
+    console.log("Transaction sent. Hash:", tx.hash);
+
+    // Wait for the transaction to be mined
+    const receipt = await tx.wait();
+    console.log("Transaction mined. Receipt:", receipt);
+
+    // Access specific details if needed
+    console.log("Block Number:", receipt.blockNumber);
+    console.log("Gas Used:", receipt.gasUsed.toString());
     console.log("Swapped successfully")
+    
     return true
 
   } catch (error) {
