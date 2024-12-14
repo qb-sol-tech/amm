@@ -2,9 +2,10 @@ import { ethers } from "ethers"
 import { Token } from "@uniswap/sdk-core"
 import { Pair } from "@uniswap/v2-sdk"
 
-import { ERC20_ABI, SEPOLIA_CHAIN_ID } from "../constants"
+import { SEPOLIA_CHAIN_ID } from "../constants"
+import { ERC20_ABI } from "../abi"
 import { getProvider, getWallet } from "../providers"
-import { CurrentConfig } from "../../config"
+import { CurrentConfig } from "../config"
 
 import * as dotenv from 'dotenv'
 import { ROUTER_ABI } from "../abi"
