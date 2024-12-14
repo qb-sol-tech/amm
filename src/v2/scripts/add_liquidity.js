@@ -1,31 +1,26 @@
 import { ethers } from "ethers"
-import { ChainId, Token } from "@uniswap/sdk-core"
+import { Token } from "@uniswap/sdk-core"
 import { Pair } from "@uniswap/v2-sdk"
 
 import { ERC20_ABI, SEPOLIA_CHAIN_ID } from "../constants"
 import { getProvider, getWallet } from "../providers"
-import { CurrentConfig, Environment } from "../../config"
+import { CurrentConfig } from "../../config"
 
 import * as dotenv from 'dotenv'
 import { ROUTER_ABI } from "../abi"
 
 dotenv.config()
 
-const token0Address = process.env.TOKEN0_ADDRESS
-const token1Address = process.env.TOKEN1_ADDRESS
-const percentToBuy = process.env.PERCENT_TO_BUY
-
 const v2RouterAddress = CurrentConfig.env == 'Mainnet'
   ? '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
   : '0xeE567Fe1712Faf6149d80dA1E6934E354124CfE3'
 
-export async function addLiquidity() {
+export async function addLiquidity({token0Address, token1Address, token0Amount, token1Amount}) {
 
-  if (!token0Address || !token1Address || !percentToBuy) {
+  if (!token0Address || !token1Address) {
     throw new Error(`Missing required environment variables:
       TOKEN0_ADDRESS: ${token0Address ? 'Set' : 'Not Set'}
       TOKEN1_ADDRESS: ${token1Address ? 'Set' : 'Not Set'}
-      PERCENT_TO_BUY: ${percentToBuy ? 'Set' : 'Not Set'}
     `)
   }
   const tokenAContract = new ethers.Contract(token0Address, ERC20_ABI, getProvider())
@@ -60,8 +55,8 @@ export async function addLiquidity() {
       console.log('Pair does not exist, It will be created when liquidity is added')
     }
 
-    const amountADesired = ethers.parseUnits(CurrentConfig.tokens.token0AmountForMint.toString(), tokenA.decimals)
-    const amountBDesired = ethers.parseUnits(CurrentConfig.tokens.token1AmountForMint.toString(), tokenA.decimals)
+    const amountADesired = ethers.parseUnits(token0Amount.toString(), tokenA.decimals)
+    const amountBDesired = ethers.parseUnits(token1Amount.toString(), tokenA.decimals)
 
     const tokenAContract = new ethers.Contract(tokenA.address, ERC20_ABI, getWallet())
     const tokenBContract = new ethers.Contract(tokenB.address, ERC20_ABI, getWallet())
