@@ -7,10 +7,7 @@ import { ERC20_ABI } from "../abi"
 import { getProvider, getWallet } from "../providers"
 import { CurrentConfig } from "../config"
 
-import * as dotenv from 'dotenv'
 import { ROUTER_ABI } from "../abi"
-
-dotenv.config()
 
 const v2RouterAddress = CurrentConfig.env == 'Mainnet'
   ? '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'

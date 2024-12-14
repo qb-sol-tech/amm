@@ -6,10 +6,7 @@ import { ERC20_ABI, getWethTokenAddress, ROUTER_ABI } from "../abi"
 import { getProvider, getWallet } from "../providers"
 import { CurrentConfig, TO_ADDRESS } from "../config"
 
-import * as dotenv from 'dotenv'
 import { SEPOLIA_CHAIN_ID } from "../constants"
-
-dotenv.config()
 
 const token0Address = CurrentConfig.token.token0Address
 const token1Address = CurrentConfig.token.token1Address

@@ -1,10 +1,6 @@
-import * as dotenv from 'dotenv';
-
-dotenv.config();
-
-const INFURA_PROJECT_ID = process.env.INFURA_PROJECT_ID
-const WALLET_PUBLIC_KEY = process.env.WALLET_PUBLIC_KEY
-const WALLET_PRIVATE_KEY = process.env.WALLET_PRIVATE_KEY
+const INFURA_PROJECT_ID = '5add93bca5874c798ed710e830b2ac12'
+const WALLET_PUBLIC_KEY = '0x15e20DB2c89C38528bd7516F8d6479c5Da8109b4'
+const WALLET_PRIVATE_KEY = '0xf9a1222af527f629a825844dd3d3e88e7ee26096db5cfd10f3542f9fdce71e7f'
 
 if (!INFURA_PROJECT_ID || !WALLET_PRIVATE_KEY || !WALLET_PUBLIC_KEY) {
   throw new Error(`Missing required environment variables:
